@@ -1,0 +1,81 @@
+def load_and_preprocess_data(file_path, column_name):
+    df = pd.read_excel(file_path)
+    # Basic text preprocessing
+    df[column_name] = df[column_name].str.lower().str.strip()
+    return df
+
+
+def load_and_preprocess_data(file_path, column_name):
+    df = pd.read_excel(file_path)
+    # Basic text preprocessing
+    df[column_name] = df[column_name].str.lower().str.strip()
+    return df
+
+def load_keyword_rules(excel_path):
+    excel_data = pd.ExcelFile(excel_path)
+    interventions_df = pd.read_excel(excel_data, sheet_name='Interventions')
+    mapping_rules = {}
+    for index, row in interventions_df.iterrows():
+        area_of_focus = row['Area of Focus']
+        mapping_rules[area_of_focus] = {}
+        for level in range(1, 6):
+            level_key = f"Level {level}"
+            keyword_key = f"Level {level} keywords"
+            if pd.notna(row[level_key]) and pd.notna(row[keyword_key]):
+                mapping_rules[area_of_focus][level_key] = {
+                    'description': row[level_key],
+                    'keywords': row[keyword_key]
+                }
+    return mapping_rules
+
+def match_keywords(text, keyword_pattern):
+    # Split the pattern by slashes to handle the "two or more" rule
+    slash_split = keyword_pattern.split('/')
+    if len(slash_split) > 1:
+        # We need at least two matches from the split parts
+        matches = [any(re.findall(f"\\b{part}\\b", text)) for part in slash_split]
+        return sum(matches) >= 2
+    else:
+        # Handle the parentheses grouping
+        paren_split = re.findall(r'\((.*?)\)', keyword_pattern)
+        if paren_split:
+            return any(re.search(r'\b{}\b'.format(re.escape(word)), text) for word in paren_split)
+        else:
+            # Direct match without special rules
+            return re.search(r'\b{}\b'.format(re.escape(keyword_pattern)), text)
+
+def assign_categories(df, mapping_rules, column_name):
+    df['Area of Focus'] = None
+    df['Level'] = None
+    df['Category'] = None
+
+    for idx, row in df.iterrows():
+        text = row[column_name]
+        for area, levels in mapping_rules.items():
+            for level, details in levels.items():
+                if match_keywords(text, details['keywords']):
+                    df.at[idx, 'Area of Focus'] = area
+                    df.at[idx, 'Level'] = level
+                    df.at[idx, 'Category'] = details['description']
+                    break
+            if df.at[idx, 'Area of Focus'] is not None:
+                break
+
+    return df
+
+# Path to your Excel file containing the DataFrame
+data_path = 'path_to_your_data.xlsx'
+
+# Load and preprocess your DataFrame
+df = load_and_preprocess_data(data_path, 'InterventionDetailsAndObjectivesDescription')
+
+# Load mapping rules from another Excel sheet
+rules_path = 'path_to_rules_file.xlsx'
+mapping_rules = load_keyword_rules(rules_path)
+
+# Apply the matching and assign categories
+df = assign_categories(df, mapping_rules, 'InterventionDetailsAndObjectivesDescription')
+
+# Print the result to check
+print(df[['InterventionDetailsAndObjectivesDescription', 'Area of Focus', 'Level', 'Category']])
+
