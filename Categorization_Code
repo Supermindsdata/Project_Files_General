@@ -79,3 +79,52 @@ df = assign_categories(df, mapping_rules, 'InterventionDetailsAndObjectivesDescr
 # Print the result to check
 print(df[['InterventionDetailsAndObjectivesDescription', 'Area of Focus', 'Level', 'Category']])
 
+----------------------------------------------
+
+def match_keywords(text, keyword_pattern):
+    # Split the pattern by slashes to handle the "two or more" rule
+    slash_split = keyword_pattern.split('/')
+    found_keywords = []
+    if len(slash_split) > 1:
+        # We need at least two matches from the split parts
+        matches = [(part, re.findall(f"\\b{part}\\b", text)) for part in slash_split]
+        match_counts = sum([bool(match[1]) for match in matches])
+        if match_counts >= 2:
+            found_keywords = [match[0] for match in matches if match[1]]
+    else:
+        # Handle the parentheses grouping
+        paren_split = re.findall(r'\((.*?)\)', keyword_pattern)
+        if paren_split:
+            for word in paren_split:
+                if re.search(r'\b{}\b'.format(re.escape(word)), text):
+                    found_keywords.append(word)
+        else:
+            # Direct match without special rules
+            if re.search(r'\b{}\b'.format(re.escape(keyword_pattern)), text):
+                found_keywords.append(keyword_pattern)
+
+    return found_keywords if found_keywords else None
+
+def assign_categories(df, mapping_rules, column_name):
+    df['Area of Focus'] = None
+    df['Level'] = None
+    df['Category'] = None
+    df['Matching Keywords'] = None  # New column to store the matched keywords
+
+    for idx, row in df.iterrows():
+        text = row[column_name].lower()  # Ensure the text is in lower case for matching
+        for area, levels in mapping_rules.items():
+            for level, details in levels.items():
+                matching_keywords = match_keywords(text, details['keywords'])
+                if matching_keywords:
+                    df.at[idx, 'Area of Focus'] = area
+                    df.at[idx, 'Level'] = level
+                    df.at[idx, 'Category'] = details['description']
+                    df.at[idx, 'Matching Keywords'] = ", ".join(matching_keywords)  # Join list of keywords into a string
+                    break
+            if df.at[idx, 'Area of Focus'] is not None:
+                break
+
+    return df
+-------------------------------------------------------------
+
