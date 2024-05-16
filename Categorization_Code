@@ -79,7 +79,7 @@ df = assign_categories(df, mapping_rules, 'InterventionDetailsAndObjectivesDescr
 # Print the result to check
 print(df[['InterventionDetailsAndObjectivesDescription', 'Area of Focus', 'Level', 'Category']])
 
-----------------------------------------------
+------------------------------------ Displaying keywords considered for mapping in final dataframe -----------------
 
 def match_keywords(text, keyword_pattern):
     # Split the pattern by slashes to handle the "two or more" rule
@@ -126,5 +126,72 @@ def assign_categories(df, mapping_rules, column_name):
                 break
 
     return df
--------------------------------------------------------------
+---------------------------------------- Using multiple columns for mapping --------------------------------
+
+def concatenate_columns(df, columns):
+    # Creating a new column 'ConcatenatedText' that merges the text from the specified columns
+    df['ConcatenatedText'] = df[columns].apply(lambda x: ' '.join(x.dropna().astype(str)).lower(), axis=1)
+    return df
+
+def match_keywords(text, keyword_pattern):
+    slash_split = keyword_pattern.split('/')
+    found_keywords = []
+    if len(slash_split) > 1:
+        matches = [(part, re.findall(f"\\b{part}\\b", text)) for part in slash_split]
+        match_counts = sum([bool(match[1]) for match in matches])
+        if match_counts >= 2:
+            found_keywords = [match[0] for match in matches if match[1]]
+    else:
+        paren_split = re.findall(r'\((.*?)\)', keyword_pattern)
+        if paren_split:
+            for word in paren_split:
+                if re.search(r'\b{}\b'.format(re.escape(word)), text):
+                    found_keywords.append(word)
+        else:
+            if re.search(r'\b{}\b'.format(re.escape(keyword_pattern)), text):
+                found_keywords.append(keyword_pattern)
+
+    return found_keywords if found_keywords else None
+
+def assign_categories(df, mapping_rules, text_column='ConcatenatedText'):
+    df['Area of Focus'] = None
+    df['Level'] = None
+    df['Category'] = None
+    df['Matching Keywords'] = None
+
+    for idx, row in df.iterrows():
+        text = row[text_column]  # Use the concatenated text for keyword matching
+        for area, levels in mapping_rules.items():
+            for level, details in levels.items():
+                matching_keywords = match_keywords(text, details['keywords'])
+                if matching_keywords:
+                    df.at[idx, 'Area of Focus'] = area
+                    df.at[idx, 'Level'] = level
+                    df.at[idx, 'Category'] = details['description']
+                    df.at[idx, 'Matching Keywords'] = ", ".join(matching_keywords)
+                    break
+            if df.at[idx, 'Area of Focus'] is not None:
+                break
+
+    return df
+
+# Assuming you have already loaded your DataFrame `df`
+columns_to_use = ['InterventionTypeDescription', 'InterventionDetailsAndObjectivesDescription']
+
+# Concatenate the specified columns into a single column for processing
+df = concatenate_columns(df, columns_to_use)
+
+# Load the keyword mapping rules (assuming this has been already defined)
+mapping_rules = load_keyword_rules('path_to_your_rules_file.xlsx')
+
+# Apply the keyword matching and category assignment
+df = assign_categories(df, mapping_rules)
+
+# Print the result to verify the output
+print(df[['ConcatenatedText', 'Area of Focus', 'Level', 'Category', 'Matching Keywords']])
+
+
+
+
+
 
