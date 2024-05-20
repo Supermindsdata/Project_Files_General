@@ -229,8 +229,7 @@ print(df[['ConcatenatedText', 'BERT_Features']])
 
 ############## Using Spacy for cleaning and Bert for embedding #############
 
-pip install spacy transformers
-python -m spacy download en_core_web_sm
+# Load spaCy and BERT
 
 import spacy
 from transformers import BertTokenizer, BertModel
@@ -245,6 +244,7 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertModel.from_pretrained('bert-base-uncased')
 model.eval()  # Set the model to evaluation mode if not training
 
+# Define Preprocessing and Feature Extraction Functions
 
 def preprocess_text(text):
     """ Use spaCy to clean and lemmatize text. """
@@ -266,12 +266,17 @@ def add_features_to_df(df, text_column):
     df['BERT_Features'] = df['CleanedText'].apply(get_bert_features)
     return df
 
+# Apply the Integrated Processing to DataFrame
 
 # Assuming 'ConcatenatedText' is already in your DataFrame
 df = add_features_to_df(df, 'ConcatenatedText')
 
 # Print the result to verify outputs
 print(df[['ConcatenatedText', 'CleanedText', 'BERT_Features']])
+
+
+
+
 
 ############## machine learning model to predict categories with bert embeddings ###########
 
