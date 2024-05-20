@@ -190,6 +190,137 @@ df = assign_categories(df, mapping_rules)
 # Print the result to verify the output
 print(df[['ConcatenatedText', 'Area of Focus', 'Level', 'Category', 'Matching Keywords']])
 
+################# Bert tokenizor integration #########################
+
+from transformers import BertTokenizer, BertModel
+import torch
+import pandas as pd
+
+# Load tokenizer and model
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained('bert-base-uncased')
+
+def add_bert_features(df, text_column):
+    # This function assumes that CUDA is available. If not, remove '.to("cuda")' below
+    model.to("cuda")
+    
+    # Function to get BERT features for a single text
+    def get_bert_features(text):
+        inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+        # Move tensors to the same device as the model
+        inputs = {key: value.to("cuda") for key, value in inputs.items()}
+        with torch.no_grad():  # Ensure no gradients are calculated
+            outputs = model(**inputs)
+        # Retrieve the last hidden states and move to CPU
+        features = outputs.last_hidden_state[:, 0, :].cpu().numpy()  # Get the embeddings of the [CLS] token
+        return features
+
+    # Apply the function to each item in the column and store the results as a new column
+    df['BERT_Features'] = df[text_column].apply(lambda x: get_bert_features(x))
+
+    return df
+
+# Assuming you have already loaded your DataFrame `df` and concatenated the columns
+# Now add BERT features
+df = add_bert_features(df, 'ConcatenatedText')
+
+# Print the result to verify the output
+print(df[['ConcatenatedText', 'BERT_Features']])
+
+############## Using Spacy for cleaning and Bert for embedding #############
+
+pip install spacy transformers
+python -m spacy download en_core_web_sm
+
+import spacy
+from transformers import BertTokenizer, BertModel
+import torch
+import pandas as pd
+
+# Load spaCy NLP model
+nlp = spacy.load('en_core_web_sm')
+
+# Load BERT tokenizer and model
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained('bert-base-uncased')
+model.eval()  # Set the model to evaluation mode if not training
+
+
+def preprocess_text(text):
+    """ Use spaCy to clean and lemmatize text. """
+    doc = nlp(text)
+    cleaned_text = ' '.join(token.lemma_ for token in doc if not token.is_stop and not token.is_punct and token.text not in ['nonrelevant'])
+    return cleaned_text
+
+def get_bert_features(text):
+    """ Extract BERT features for a single text input. """
+    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    features = outputs.last_hidden_state[:, 0, :].squeeze().numpy()  # Get the embeddings of the [CLS] token
+    return features
+
+def add_features_to_df(df, text_column):
+    """ Preprocess text and then add BERT features to the DataFrame. """
+    df['CleanedText'] = df[text_column].apply(preprocess_text)
+    df['BERT_Features'] = df['CleanedText'].apply(get_bert_features)
+    return df
+
+
+# Assuming 'ConcatenatedText' is already in your DataFrame
+df = add_features_to_df(df, 'ConcatenatedText')
+
+# Print the result to verify outputs
+print(df[['ConcatenatedText', 'CleanedText', 'BERT_Features']])
+
+############## machine learning model to predict categories with bert embeddings ###########
+
+
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+def train_and_predict_with_bert_features(df, feature_column, target_column):
+    # Filter out rows where the category is not yet mapped
+    mapped_df = df.dropna(subset=[target_column, feature_column])
+
+    # Prepare the features and labels
+    X = np.stack(mapped_df[feature_column].values)  # Assuming BERT features are already in a suitable numpy array format
+    y = mapped_df[target_column].values
+
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Initialize and train the classifier
+    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    clf.fit(X_train, y_train)
+
+    # Predict on the test set
+    y_pred = clf.predict(X_test)
+
+    # Evaluate the model
+    print("Accuracy on test set:", accuracy_score(y_test, y_pred))
+    print("Classification Report:\n", classification_report(y_test, y_pred))
+
+    # Predicting the unmapped categories in the original DataFrame
+    unmapped_index = df[df[target_column].isnull()].index
+    unmapped_features = np.stack(df.loc[unmapped_index, feature_column].values)
+    unmapped_predictions = clf.predict(unmapped_features)
+    df.loc[unmapped_index, target_column] = unmapped_predictions
+
+    return df
+
+
+# Assume 'df' is your DataFrame and 'BERT_Features' are stored from previous steps
+# 'Category' is the target column where some entries are already mapped
+
+df = train_and_predict_with_bert_features(df, 'BERT_Features', 'Category')
+
+# Now df has the previously unmapped categories filled in
+print(df[['ConcatenatedText', 'Category']])
+
+##################################################################
 
 
 
