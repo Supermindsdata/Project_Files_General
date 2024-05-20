@@ -278,15 +278,10 @@ print(df[['ConcatenatedText', 'CleanedText', 'BERT_Features']])
 
 
 
-############## machine learning model to predict categories with bert embeddings ###########
+############## machine learning model to predict categories with bert embeddings and map area of interest ###########
 
 
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report
-
-def train_and_predict_with_bert_features(df, feature_column, target_column):
+def train_and_predict_with_bert_features(df, feature_column, target_column, mapping_rules):
     # Filter out rows where the category is not yet mapped
     mapped_df = df.dropna(subset=[target_column, feature_column])
 
@@ -314,16 +309,19 @@ def train_and_predict_with_bert_features(df, feature_column, target_column):
     unmapped_predictions = clf.predict(unmapped_features)
     df.loc[unmapped_index, target_column] = unmapped_predictions
 
-    return df
+    # Map "Area of Focus" based on the predicted "Category"
+    df['Area of Focus'] = df[target_column].apply(lambda x: mapping_rules.get(x, {}).get('Area of Focus', 'Unknown'))
 
+    return df
 
 # Assume 'df' is your DataFrame and 'BERT_Features' are stored from previous steps
 # 'Category' is the target column where some entries are already mapped
 
-df = train_and_predict_with_bert_features(df, 'BERT_Features', 'Category')
+df = train_and_predict_with_bert_features(df, 'BERT_Features', 'Category', mapping_rules)
 
-# Now df has the previously unmapped categories filled in
-print(df[['ConcatenatedText', 'Category']])
+# Now df has the previously unmapped categories filled in and areas of focus mapped
+print(df[['ConcatenatedText', 'Category', 'Area of Focus']])
+
 
 ##################################################################
 
