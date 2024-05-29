@@ -323,9 +323,48 @@ df = train_and_predict_with_bert_features(df, 'BERT_Features', 'Category', mappi
 print(df[['ConcatenatedText', 'Category', 'Area of Focus']])
 
 
-##################################################################
+####################################updated match keywords function to handle lower upper text ##############################
 
 
+import re
+
+def match_keywords(text, keyword_pattern):
+    # Normalize the text to lower case if you're not using case-insensitive matching
+    text = text.lower()
+
+    # Prepare regex for matching plural and singular forms
+    def prepare_regex(word):
+        # This is a simple way to handle plurals; it may need more sophisticated patterns based on your specific use case
+        if word.endswith('y'):
+            # City, cities
+            return f"{word[:-1]}[ie]s"
+        elif word.endswith('s'):
+            # Class, classes
+            return f"{word}es"
+        else:
+            return f"{word}s?"
+
+    # Split the pattern by slashes and parentheses to handle the complex rules
+    found_keywords = []
+    # Handle slash-separated "OR" groups requiring one or more matches
+    slash_groups = keyword_pattern.split('/')
+    for group in slash_groups:
+        # Extract words within parentheses as optional variations
+        parenthesized_words = re.findall(r'\((.*?)\)', group)
+        if parenthesized_words:
+            for word in parenthesized_words:
+                regex = re.compile(prepare_regex(word), re.IGNORECASE)
+                if regex.search(text):
+                    found_keywords.append(word)
+        else:
+            # No parentheses, directly add regex for potential plurals
+            words = group.split()
+            for word in words:
+                regex = re.compile(prepare_regex(word), re.IGNORECASE)
+                if regex.search(text):
+                    found_keywords.append(word)
+
+    return found_keywords if found_keywords else None
 
 
 
