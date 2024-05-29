@@ -367,4 +367,42 @@ def match_keywords(text, keyword_pattern):
     return found_keywords if found_keywords else None
 
 
+########## added stop words list to above function #############
+
+stopwords = set(["the", "and", "to", "of", "in", "a", "is", "that", "for", "on", "it", "with", "as", "this", "by", "are", "or", "from"])
+
+import re
+
+def match_keywords(text, keyword_pattern, stopwords):
+    def prepare_regex(word):
+        if word in stopwords:
+            return None  # Return None if the word is a stopword
+        if word.endswith('y'):
+            return f"{word[:-1]}[ie]s"
+        elif word.endswith('s'):
+            return f"{word}es"
+        else:
+            return f"{word}s?"
+
+    found_keywords = []
+    slash_groups = keyword_pattern.split('/')
+    for group in slash_groups:
+        parenthesized_words = re.findall(r'\((.*?)\)', group)
+        if parenthesized_words:
+            for word in parenthesized_words:
+                regex_pattern = prepare_regex(word)
+                if regex_pattern:
+                    regex = re.compile(regex_pattern, re.IGNORECASE)
+                    if regex.search(text):
+                        found_keywords.append(word)
+        else:
+            words = group.split()
+            for word in words:
+                regex_pattern = prepare_regex(word)
+                if regex_pattern:
+                    regex = re.compile(regex_pattern, re.IGNORECASE)
+                    if regex.search(text):
+                        found_keywords.append(word)
+
+    return found_keywords if found_keywords else None
 
