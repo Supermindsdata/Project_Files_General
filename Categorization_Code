@@ -543,3 +543,231 @@ mapping_rules = {
    
    }
 
+---------------- corrected and updated dictionary -------------------
+
+mapping_rules = {
+
+'Caring Responsibilities': {'Level 1': {'description': 'Bring children to appointments',
+   'keywords': '(Children) (childcare) (child)/ (appointment) (office)'},
+  'Level 2': {'description': 'Identify support available locally',
+   'keywords': '(Identify support)'},
+  'Level 3': {'description': 'Identify nurseries offering funded childcare',
+   'keywords': '(Identify) / (nurseries)(funded childcare)'},
+  'Level 4': {'description': 'Plan a care timetable',
+   'keywords': '(Care timetable) (timetable for care)'}},
+ 
+ 'Finance': {'Level 1': {'description': 'Make a budget ',
+   'keywords': '(Budget)'},
+  'Level 2': {'description': 'Explore debt management options',
+   'keywords': '(Debt management)'},
+  'Level 3': {'description': 'Complete debt management course on iWorks',
+   'keywords': 'Debt management/iworks/course '}},
+ 
+ 'Photo ID': {'Level 1': {'description': 'Apply for photo ID (NB - various types, passport, driving licence, citizen card, etc.)',
+   'keywords': '(Passport) (Driving Licence) (Citizen Card) (photo ID) (photo)'}},
+ 
+ 'Criminal Record': {'Level 2': {'description': 'Identify skill and qualifications gaps',
+   'keywords': '(Skill gaps) (qualification gaps)'},
+  'Level 3': {'description': 'Practice interview skills and how to talk to an employer about criminal convictions',
+   'keywords': '(Criminal) (criminal record) (convictions)'},
+  'Level 4': {'description': 'Speak to Probation Officer',
+   'keywords': '(Probation officer)'}},
+ 
+ 'Housing': {'Level 1': {'description': 'Meet with Housing Officer to discuss support available',
+   'keywords': '(Housing officer)'},
+  'Level 2': {'description': 'Contact housing association',
+   'keywords': '(Housing association)'},
+  'Level 3': {'description': "Contact Citizen's Advice Bureau",
+   'keywords': "(Citizen's Advice) (CAB) (Citizens Advice)"}},
+ 
+ 'Physical Capability': {'Level 1': {'description': 'Speak to GP',
+   'keywords': '(Doctor) (GP)'},
+  'Level 2': {'description': 'Obtain a fit note',
+   'keywords': '(Fit note) (sick note) (fit for work)'},
+  'Level 3': {'description': 'Identify benefits of increasing Physical activity',
+   'keywords': 'Physical/activity/benefits '},
+  'Level 4': {'description': 'Identify suitable pathways to employment',
+   'keywords': '(Pathways to employment)'},
+  'Level 5': {'description': 'Identify specialist intervention services relating to physical activity',
+   'keywords': 'Physical activity/services '}},
+ 
+ 'Digital Skills': {'Level 1': {'description': 'Complete a digital audit',
+   'keywords': '(Digital audit)'},
+  'Level 2': {'description': 'Apply for VOXI', 
+   'keywords': '(VOXI)'},
+  'Level 3': {'description': 'Complete iworks digital skills sessions',
+   'keywords': '(iWorks) /(digital) (digital skills) '},
+  'Level 4': {'description': 'Look at attending a college course',
+   'keywords': '(College) (course) (digital college)'}},
+ 
+ 'Mental Wellbeing': {'Level 1': {'description': 'Complete a mental wellbeing assessment',
+   'keywords': '(Mental wellbeing assessment) (wellbeing assessment)'},
+  'Level 2': {'description': 'Attend an internal wellbeing workshop',
+   'keywords': 'wellbeing/workshop '},
+  'Level 3': {'description': 'Attend a 121 with the wellbeing officer',
+   'keywords': '(Wellbeing officer)'}},
+ 
+ 'Communication Skills': {'Level 1': {'description': 'Identify immediate support available to develop your understanding of English (E.g. family)',
+   'keywords': 'Understanding/english '},
+  'Level 2': {'description': 'Identify ESOL courses available',
+   'keywords': '(ESOL course)'},
+  'Level 3': {'description': 'Attend an ESOL course',
+   'keywords': 'Attend/ESOL  '},
+  'Level 4': {'description': 'Complete role play exercises with people known to you to develop questioning techniques',
+   'keywords': 'Role play/questioning techniques '},
+  'Level 5': {'description': 'Attend an interview skills workshop',
+   'keywords': 'Attend/interview/session/workshop '}},
+ 
+ 'Learning Capability': {'Level 1': {'description': 'Identifying areas for improving reading and writing with iWorks',
+   'keywords': 'Reading/writing/iworks '},
+  'Level 2': {'description': 'Identifying areas for improving reading and writing within local community',
+   'keywords': 'Reading and writing/local/community '}},
+ 
+ 'Qualifications': {'Level 1': {'description': 'Provide evidence of qualifications',
+   'keywords': 'Evidence/qualifications '},
+  'Level 2': {'description': 'Identify qualifications needed to fill gaps',
+   'keywords': 'Identify/qualifications  '},
+  'Level 3': {'description': "Identify qualifications that could be gained via iWork's",
+   'keywords': 'Qualifications/iworks '}},
+ 
+ 'Literacy and Numeracy': {'Level 1': {'description': 'Attend a numeracy course (External)',
+   'keywords': '(Numeracy course) (numeracy session)'},
+  'Level 2': {'description': 'Attend the journey to employment workshop',
+   'keywords': '(journey to employment)'}},
+ 
+ 'Attending Job Interviews': {'Level 1': {'description': 'Research the role being applied for',
+   'keywords': 'Research/role '},
+  'Level 2': {'description': 'Attend a group session on interview preparation',
+   'keywords': 'Attend/group/session/interview '},
+  'Level 4': {'description': 'Complete a mock interview with an Advisor',
+   'keywords': '(Mock interview) (practice interview)'}},
+ 
+ 'Completing CV and Job Applications': {'Level 1': {'description': 'Gather work and education history',
+   'keywords': 'Education/work/history '},
+  'Level 2': {'description': 'Use iworks to build a CV/curriculum vitae',
+   'keywords': '(iWorks) / (CV) (curriculum vitae)/ (create) / (build)'},
+  'Level 3': {'description': 'Use iWorks CV checker to assess the quality of your CV',
+   'keywords': '(iWorks) / (CV) (curriculum vitae)/ (check)'},
+  'Level 4': {'description': 'Create a CV tailored to the role you are applying for',
+   'keywords': 'CV/Tailored '},
+  'Level 5': {'description': 'Attend a group session on CV building',
+   'keywords': '(Session) / (CV) (curriculum vitae)'}},
+ 
+ 'Job Search': {'Level 1': {'description': 'Sign up for job search websites',
+   'keywords': '(Job search) (job websites) (job sites)'},
+  'Level 2': {'description': 'Use the job search function in iWorks to shortlist roles to apply for',
+   'keywords': 'job search/iworks '},
+  'Level 3': {'description': 'Attend internal job fair at the Restart site',
+   'keywords': '(Job fair)'},
+  'Level 4': {'description': 'Use computers at Restart office to apply for jobs',
+   'keywords': 'Apply/jobs  '},
+  'Level 5': {'description': 'Create multiple CVs relevant to the sectors being applied for',
+   'keywords': '(Multiple) / (CV) (CVs) (curriculum vitae)'}},
+ 
+ 'Transport': {'Level 1': {'description': 'Plan travel routes for attending appointments',
+   'keywords': '(Plan) /(travel) (routes) '},
+  'Level 2': {'description': 'Bring evidence of travel costs to appointment to claim expenses',
+   'keywords': 'Travel/costs(cost)/expenses'},
+  'Level 3': {'description': 'Plan travel routes for attending job interviews/work locations',
+   'keywords': 'Plan/travel/(interviews)(interview)/work '}},
+ 
+ 'Confidence': {'Level 1': {'description': 'Attend a confidence building session',
+   'keywords': '(Confidence building session)'},
+  'Level 2': {'description': 'Complete confidence building sessions on iWorks',
+   'keywords': 'Confidence building/iworks '}},
+ 
+ 'Motivation': {'Level 1': {'description': 'Complete iWorks motivational sessions',
+   'keywords': 'iworks/motivational session '}}
+   
+   }
+
+--------------------- updated match keywords function to handle new dictionary and case sensitive and plural ----------
+
+import re
+
+def match_keywords(text, keyword_pattern, stopwords):
+    def prepare_regex(words):
+        # Handling both plural and singular forms by making the last 's' optional
+        words = re.sub(r'\b(\w+?)\b', r'\1s?', words)
+        # Escaping special characters in words
+        words = re.escape(words)
+        # Replace spaces with regex that allows optional extra words in between
+        words = words.replace(r'\ ', r'\s+')
+        return words
+
+    # Initialize found keywords list
+    found_keywords = []
+
+    # Normalize text for case insensitive matching
+    text = text.lower()
+
+    # Handle each group divided by '/'
+    for group in keyword_pattern.split('/'):
+        # Extract keywords inside parentheses and handle them with regex
+        group_keywords = re.findall(r'\((.*?)\)', group)
+        if group_keywords:
+            # Create regex pattern for each keyword considering stopwords
+            for keywords in group_keywords:
+                if keywords.lower() not in stopwords:
+                    regex = re.compile(prepare_regex(keywords), re.IGNORECASE)
+                    if regex.search(text):
+                        found_keywords.append(keywords)
+        else:
+            # If no parentheses, treat the whole group as one keyword
+            if group.strip().lower() not in stopwords:
+                regex = re.compile(prepare_regex(group.strip()), re.IGNORECASE)
+                if regex.search(text):
+                    found_keywords.append(group.strip())
+
+    return found_keywords if found_keywords else None
+
+stopwords = set(["the", "and", "to", "of", "in", "a", "is", "that", "for", "on", "it", "with", "as", "this", "by", "are", "or", "from"])
+
+# Example text and keyword pattern from your mapping rules
+text = "John needs to plan travel routes for his interviews and work locations."
+keyword_pattern = "(Plan) /(travel) (routes)"
+
+# Call match_keywords function
+matched_keywords = match_keywords(text, keyword_pattern, stopwords)
+print("Matched Keywords:", matched_keywords)
+
+ The keyword mapping rules in your mapping_rules dictionary, along with how the match_keywords function is designed to handle them, are crucial for ensuring accurate categorization based on textual content. Let's break down both the structure of the rules and the logic of the keyword matching function.
+
+Understanding of Keyword Mapping Rules
+Your mapping_rules dictionary organizes information under various "Areas of Focus," each containing several "Levels" that describe specific actions or considerations. Each level has:
+
+Description: A brief description of the action or focus at that level.
+Keywords: A set of keywords designed to match related content in your textual data. These keywords are formatted in a way that indicates how they should be matched, using parentheses () and slashes /.
+Examples from your data:
+
+Caring Responsibilities: Level 1
+
+Description: "Bring children to appointments"
+Keywords: "(Children) (childcare) (child)/ (appointment) (office)"
+This means the text should contain either "children," "childcare," or "child" AND "appointment" or "office."
+Physical Capability: Level 3
+
+Description: "Identify benefits of increasing Physical activity"
+Keywords: "Physical/activity/benefits"
+This indicates a need for the presence of "Physical," "activity," and "benefits" in any order.
+Keyword Matching Function Logic
+The match_keywords function processes these keyword patterns to match text data effectively. Here’s how it works with the key aspects being addressed:
+
+Regular Expressions: It uses Python’s re module to create and apply regular expressions based on the keyword patterns.
+
+Plural and Singular Forms: By appending s? to the keywords (where applicable), the regex pattern accounts for both plural and singular forms. This regex adjustment is done in the prepare_regex function which modifies the keywords before they are compiled into regex patterns.
+
+Case Insensitivity: It performs case-insensitive matching (re.IGNORECASE) to ensure that variations in capitalization do not affect the matching process.
+
+Handling of Parentheses and Slashes:
+
+Parentheses (): Items within parentheses are treated as separate options within a group. The text should match any of the options listed within the parentheses.
+Slashes /: These are used to denote essential words that must all appear in the text, though not necessarily adjacent to each other or in the order listed.
+Stopwords Filtering: Common words like "the," "and," "to," etc., are filtered out to prevent them from triggering matches that are not meaningful. This filtering occurs before the regex matching checks, thus ensuring that these common words do not skew the matching results.
+
+Applying the Matching Function
+When match_keywords is invoked, it processes each group of keywords:
+
+It constructs a regex pattern for each keyword or group of keywords (considering stopwords and plural/singular forms).
+It then checks the provided text against these patterns.
+If a match is found based on the conditions set out by the keyword patterns (accounting for necessary groups and optionals), these keywords are added to the list of found keywords.
