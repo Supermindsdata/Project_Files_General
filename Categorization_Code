@@ -817,3 +817,168 @@ def match_keywords(text, keyword_pattern, stopwords):
 
 # Define your stopwords
 stopwords = set(["the", "and", "to", "of", "in", "a", "is", "that", "for", "on", "it", "with", "as", "this", "by", "are", "or", "from"])
+
+########## dictionary error #############
+mapping_rules = {
+
+'Caring Responsibilities': 
+ {'Level 1': {'description': 'Bring children to appointments',
+   'keywords': '(Children) (childcare) (child)/ (appointment) (office)'},
+  'Level 2': {'description': 'Identify support available locally',
+   'keywords': '(Identify/support)'},
+  'Level 3': {'description': 'Identify nurseries offering funded childcare',
+   'keywords': '(Identify) / (nurseries)(funded childcare)'},
+  'Level 4': {'description': 'Plan a care timetable',
+   'keywords': '(Care timetable) (timetable for care)'}},
+ 
+ 'Finance': 
+  {'Level 1': {'description': 'Make a budget ',
+   'keywords': '(Budget)'},
+  'Level 2': {'description': 'Explore debt management options',
+   'keywords': '(Debt)'},
+  'Level 3': {'description': 'Complete debt management course on iWorks',
+   'keywords': 'Debt management/iworks/course '}},
+ 
+ 'Photo ID': 
+  {'Level 1': {'description': 'Apply for photo ID (NB - various types, passport, driving licence, citizen card, etc.)',
+   'keywords': '(Passport) (Driving Licence) (Citizen Card) (photo ID) (photo)'}},
+ 
+ 'Criminal Record': 
+  {'Level 1': {'description': 'Identify impact on job goals and how these can be overcome',
+   'keywords': '(Criminal) (criminal record) (convictions) / (goals)'},
+  {'Level 2': {'description': 'Identify skill and qualifications gaps',
+   'keywords': '(Skill gaps) (qualification gaps) / (criminal)(conviction)'},
+  'Level 3': {'description': 'Practice interview skills and how to talk to an employer about criminal convictions',
+   'keywords': '(Criminal) (criminal record) (convictions)'},
+  'Level 4': {'description': 'Speak to Probation Officer',
+   'keywords': '(Probation officer)'}},
+   
+ 'Housing': 
+  {'Level 1': {'description': 'Meet with Housing Officer to discuss support available',
+   'keywords': '(Housing officer)'},
+  'Level 2': {'description': 'Contact housing association',
+   'keywords': '(Housing association)'},
+  'Level 3': {'description': "Contact Citizen's Advice Bureau",
+   'keywords': "(Citizen's Advice) (CAB) (Citizens Advice)"}},
+ 
+ 'Physical Capability': 
+  {'Level 1': {'description': 'Speak to GP',
+   'keywords': '(Doctor) (GP)'},
+  'Level 2': {'description': 'Obtain a fit note',
+   'keywords': '(Fit note) (sick note) (fit for work)'},
+  'Level 3': {'description': 'Identify benefits of increasing Physical activity',
+   'keywords': 'Physical/activity/benefits '},
+  'Level 4': {'description': 'Identify suitable pathways to employment',
+   'keywords': '(Pathways to employment)'},
+  'Level 5': {'description': 'Identify specialist intervention services relating to physical activity',
+   'keywords': 'Physical/activity/services '}},
+ 
+ 'Digital Skills': 
+  {'Level 1': {'description': 'Complete a digital audit',
+   'keywords': 'Digital/audit'},
+  'Level 2': {'description': 'Apply for VOXI', 
+   'keywords': '(VOXI)(voxi)'},
+  'Level 3': {'description': 'Complete iworks digital skills sessions',
+   'keywords': '(iWorks) /(digital) (digital skills) '},
+  'Level 4': {'description': 'Look at attending a college course',
+   'keywords': '(College) (course) (digital college)'}},
+ 
+ 'Mental Wellbeing': 
+  {'Level 1': {'description': 'Complete a mental wellbeing assessment',
+   'keywords': '(Mental wellbeing assessment) (wellbeing assessment)(assessment)/(mental health)'},
+  'Level 2': {'description': 'Attend an internal wellbeing workshop',
+   'keywords': '(wellbeing) (well being) (anxiety) (depression)(mental health) / (workshop) (session)'},
+  'Level 3': {'description': 'Attend a 121 with the wellbeing officer',
+   'keywords': '(Wellbeing officer) / (anxiety) (depression) (mental health)'}},
+ 
+ 'Communication Skills': 
+  {'Level 1': {'description': 'Identify immediate support available to develop your understanding of English (E.g. family)',
+   'keywords': '((Understanding) (Understand) / (english) '},
+  'Level 2': {'description': 'Identify ESOL courses available',
+   'keywords': 'Attend/ESOL'},
+  'Level 4': {'description': 'Complete role play exercises with people known to you to develop questioning techniques',
+   'keywords': 'Role play/questioning techniques '},
+  'Level 5': {'description': 'Attend an interview skills workshop',
+   'keywords': 'Attend/interview/session/workshop '}},
+ 
+ 'Learning Capability': 
+  {'Level 1': {'description': 'Identifying areas for improving reading and writing with iWorks',
+   'keywords': 'Reading/writing/iworks '},
+  'Level 2': {'description': 'Identifying areas for improving reading and writing within local community',
+   'keywords': 'Reading and writing/local/community '}},
+
+ 'Qualifications': 
+  {'Level 1': {'description': 'Provide evidence of qualifications',
+   'keywords': 'Evidence/qualifications'},
+  'Level 2': {'description': 'Identify qualifications needed to fill gaps',
+   'keywords': 'Identify/qualifications'},
+  'Level 3': {'description': "Identify qualifications that could be gained via iWork's",
+   'keywords': 'Qualification / iworks'}},
+
+ 'Qualifications Progression': 
+  {'Level 1': {'description': 'Identify qualifications gaps',
+   'keywords': 'gaps/qualifications '},
+  'Level 2': {'description': 'Apply for courses with the relevant qualifications',
+   'keywords': '(Apply) /(courses) (CSCS) (SIA) (food) (hygiene) (teaching)'},
+  'Level 3': {'description': "Update CV with new qualifications gained",
+   'keywords': '(Update) / (CV) (curriculum vitae) / (qualifications)'}},
+ 
+ 'Literacy and Numeracy': 
+  {'Level 1': {'description': 'Attend a numeracy course (External)',
+   'keywords': 'Numeracy'},
+  'Level 2': {'description': 'Attend the journey to employment workshop',
+   'keywords': 'journey/employment'}},
+ 
+ 'Attending Job Interviews': 
+  {'Level 1': {'description': 'Research the role being applied for',
+   'keywords': 'Research/role '},
+  'Level 2': {'description': 'Attend a group session on interview preparation',
+   'keywords': 'Attend/group/session/interview '},
+   'Level 3': {'description': 'Use iWorks Interview 360 tool to prepare for a job interview',
+   'keywords': 'Interview/360'},
+  'Level 4': {'description': 'Complete a mock interview with an Advisor',
+   'keywords': '(Mock)(practice) / interview'}},
+ 
+ 'Completing CV and Job Applications': 
+  {'Level 1': {'description': 'Gather work and education history',
+   'keywords': '(Education)(work)/history '},
+  'Level 2': {'description': 'Use iworks to build a CV/curriculum vitae',
+   'keywords': '(iWorks) / (CV) (curriculum vitae)/ (create) / (build)'},
+  'Level 3': {'description': 'Use iWorks CV checker to assess the quality of your CV',
+   'keywords': '(iWorks) / (CV) (curriculum vitae)/ (check)'},
+  'Level 4': {'description': 'Create a CV tailored to the role you are applying for',
+   'keywords': 'CV/Tailored '},
+  'Level 5': {'description': 'Attend a group session on CV building',
+   'keywords': '(Session) / (CV) (curriculum vitae)'}},
+ 
+ 'Job Search': 
+  {'Level 1': {'description': 'Sign up for job search websites',
+   'keywords': '(Job search) (job websites) (job sites)'},
+  'Level 2': {'description': 'Use the job search function in iWorks to shortlist roles to apply for',
+   'keywords': 'job search/iworks '},
+  'Level 3': {'description': 'Attend internal job fair at the Restart site',
+   'keywords': '(Job fair)'},
+  'Level 4': {'description': 'Apply for Jobs',
+   'keywords': '(Apply) (applied) / (jobs) (roles)'},
+  'Level 5': {'description': 'Create multiple CVs relevant to the sectors being applied for',
+   'keywords': '(Multiple) / (CV) (CVs) (curriculum vitae)'}},
+ 
+ 'Transport': 
+  {'Level 1': {'description': 'Plan travel routes',
+   'keywords': '(Plan) /(travel) (routes) '},
+  'Level 2': {'description': 'Bring evidence of travel costs to appointment to claim expenses',
+   'keywords': 'Travel/travel costs/expenses/travel expenses/costs'},
+  'Level 3': {'description': 'Plan travel routes for attending job interviews/work locations',
+   'keywords': 'Plan/travel/(interviews)(interview)/work '}},
+ 
+ 'Confidence': 
+  {'Level 1': {'description': 'Attend a confidence building session',
+   'keywords': '(Confidence)(building)/session'},
+  'Level 2': {'description': 'Complete confidence building sessions on iWorks',
+   'keywords': 'Confidence/iworks '}},
+ 
+ 'Motivation': 
+  {'Level 1': {'description': 'Complete iWorks motivational sessions',
+   'keywords': 'iworks/motivational session '}}
+   
+   }
