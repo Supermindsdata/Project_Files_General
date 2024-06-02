@@ -771,3 +771,49 @@ When match_keywords is invoked, it processes each group of keywords:
 It constructs a regex pattern for each keyword or group of keywords (considering stopwords and plural/singular forms).
 It then checks the provided text against these patterns.
 If a match is found based on the conditions set out by the keyword patterns (accounting for necessary groups and optionals), these keywords are added to the list of found keywords.
+
+############# updated match keywords function to capture correct logic ############
+
+import re
+
+def match_keywords(text, keyword_pattern, stopwords):
+    # Normalize text for case-insensitive matching
+    text = text.lower()
+
+    # Initialize found keywords list and split pattern on '/'
+    found_keywords = []
+    patterns = keyword_pattern.split('/')
+
+    # Handle each pattern part
+    matches = []
+    for pattern in patterns:
+        # Extract keywords inside parentheses
+        group_keywords = re.findall(r'\((.*?)\)', pattern)
+        group_matches = []
+        for keyword in group_keywords:
+            if keyword.lower() not in stopwords:
+                # Prepare keyword to account for plural forms simply
+                keyword_regex = r'\b' + re.escape(keyword) + r's?\b'
+                if re.search(keyword_regex, text, re.IGNORECASE):
+                    group_matches.append(keyword)
+        # Consider the whole pattern if no parentheses and not a stopword
+        if not group_keywords:
+            keyword = pattern.strip()
+            if keyword.lower() not in stopwords:
+                keyword_regex = r'\b' + re.escape(keyword) + r's?\b'
+                if re.search(keyword_regex, text, re.IGNORECASE):
+                    group_matches.append(keyword)
+        
+        # Collect matches from current group
+        if group_matches:
+            matches.append(group_matches)
+
+    # Check if enough groups have matches
+    if len(matches) >= 2:
+        for match_group in matches:
+            found_keywords.extend(match_group)
+
+    return found_keywords if found_keywords else None
+
+# Define your stopwords
+stopwords = set(["the", "and", "to", "of", "in", "a", "is", "that", "for", "on", "it", "with", "as", "this", "by", "are", "or", "from"])
