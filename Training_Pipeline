@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import mlflow
 from mlflow.models import infer_signature
 
+############### Functions ###################
 
 def get_feature_importances(model, features_to_include):
 
@@ -42,8 +43,6 @@ def get_feature_importances(model, features_to_include):
     Returns:
     - pandas.DataFrame: A DataFrame containing aggregated feature importances for the specified features.
     """
-
-############### Functions ###################
 
     # Get feature importance
     feature_importance = model.named_steps['classifier'].feature_importances_
