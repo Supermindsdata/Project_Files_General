@@ -1,0 +1,142 @@
+# Preprocess boolean columns
+for col_name in BOOL_COLS:
+    train_pdf[col_name] = train_pdf[col_name].astype(str)
+    test_pdf[col_name] = test_pdf[col_name].astype(str)
+
+# Preprocess numerical columns
+for col_name in NUMERICAL_COLS:
+    train_pdf[col_name] = pd.to_numeric(train_pdf[col_name], errors='coerce')
+    test_pdf[col_name] = pd.to_numeric(test_pdf[col_name], errors='coerce')
+
+# Preprocess categorical columns
+for col_name in CATEGORICAL_COLS:
+    train_pdf[col_name] = train_pdf[col_name].fillna('')
+    test_pdf[col_name] = test_pdf[col_name].fillna('')
+
+# Create column transformers
+bool_transformer = Pipeline(steps=[
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+])
+
+numerical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='mean')),
+    ('scaler', RobustScaler())
+])
+
+categorical_transformer = Pipeline(steps=[
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+])
+
+preprocessor = ColumnTransformer(transformers=[
+    ('bool', bool_transformer, BOOL_COLS),
+    ('numerical', numerical_transformer, NUMERICAL_COLS),
+    ('categorical', categorical_transformer, CATEGORICAL_COLS)
+])
+
+# Create an empty DataFrame to store the results
+results_df = pd.DataFrame(columns=['Classifier', 'Best Parameters', 'Test AUC', 'Test Precision', 'Test Recall', 'Test F1'])
+
+# Iterate over the classifiers
+for cls in classifiers:
+    print(f"Training {cls['name']}...")
+    
+    # Create the pipeline
+    pipeline = Pipeline(steps=[('preprocessor', preprocessor),('classifier', cls['classifier'])])
+    
+    # Create the grid search object
+    grid_search = GridSearchCV(pipeline, cls['param_grid'], cv=3, scoring='roc_auc')
+    
+    
+    # Split the balanced training data into features and target
+    # Since the train data is already balanced we will copy same dataframe
+    train_pdf_balanced = train_pdf
+
+    X_train = train_pdf_balanced.drop('job_out_come', axis=1)
+    y_train = train_pdf_balanced['job_out_come']
+    
+    # Fit the grid search object
+    grid_search.fit(X_train, y_train)
+    
+    # Get the best model
+    best_model = grid_search.best_estimator_
+
+
+    # Split the balanced test data into features and target
+    # Since the test data is already balanced we will copy same dataframe
+    test_pdf_balanced = test_pdf
+
+    X_test = test_pdf_balanced.drop('job_out_come', axis=1)
+    y_test = test_pdf_balanced['job_out_come']
+    
+    # Make predictions on the training data
+    y_train_pred = best_model.predict(X_train)
+    y_train_pred_proba = best_model.predict_proba(X_train)[:, 1]
+    
+    # Compute metrics for the training data
+    train_auc = roc_auc_score(y_train, y_train_pred_proba)
+    train_precision = precision_score(y_train, y_train_pred)
+    train_recall = recall_score(y_train, y_train_pred)
+    train_f1 = f1_score(y_train, y_train_pred)
+    
+    # Make predictions on the test data
+    y_pred = best_model.predict(X_test)
+    y_pred_proba = best_model.predict_proba(X_test)[:, 1]
+    
+    # Compute metrics for the test data
+    test_auc = roc_auc_score(y_test, y_pred_proba)
+    test_precision = precision_score(y_test, y_pred)
+    test_recall = recall_score(y_test, y_pred)
+    test_f1 = f1_score(y_test, y_pred)
+    
+    # Store the results in the DataFrame
+    results_df = results_df.append({
+        'Classifier': cls['name'],
+        'Best Parameters': grid_search.best_params_,
+        'Train AUC': train_auc,
+        'Train Precision': train_precision,
+        'Train Recall': train_recall,
+        'Train F1': train_f1,
+        'Test AUC': test_auc,
+        'Test Precision': test_precision,
+        'Test Recall': test_recall,
+        'Test F1': test_f1
+    }, ignore_index=True)
+    
+       
+    # Print the results
+    print(f"Best parameters for {cls['name']}: {grid_search.best_params_}")
+    print(f"Train AUC for {cls['name']}: {train_auc:.4f}")
+    print(f"Train Precision for {cls['name']}: {train_precision:.4f}")
+    print(f"Train Recall for {cls['name']}: {train_recall:.4f}")
+    print(f"Train F1 for {cls['name']}: {train_f1:.4f}")
+    print(f"Test AUC for {cls['name']}: {test_auc:.4f}")
+    print(f"Test Precision for {cls['name']}: {test_precision:.4f}")
+    print(f"Test Recall for {cls['name']}: {test_recall:.4f}")
+    print(f"Test F1 for {cls['name']}: {test_f1:.4f}")
+    print("---")
+
+# Display the results DataFrame
+#print("Results:")
+#results_df.display()
+
+#######################
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+/tmp/ipykernel_6188/2166524330.py in ?()
+     88     test_recall = recall_score(y_test, y_pred)
+     89     test_f1 = f1_score(y_test, y_pred)
+     90 
+     91     # Store the results in the DataFrame
+---> 92     results_df = results_df.append({
+     93         'Classifier': cls['name'],
+     94         'Best Parameters': grid_search.best_params_,
+     95         'Train AUC': train_auc,
+
+~/cluster-env/trident_env/lib/python3.10/site-packages/pandas/core/generic.py in ?(self, name)
+   5985             and name not in self._accessors
+   5986             and self._info_axis._can_hold_identifiers_and_holds_name(name)
+   5987         ):
+   5988             return self[name]
+-> 5989         return object.__getattribute__(self, name)
+
+AttributeError: 'DataFrame' object has no attribute 'append'
