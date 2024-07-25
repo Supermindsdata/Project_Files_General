@@ -230,3 +230,53 @@ average_recall = np.mean(recall_scores)
 print(f'Average Precision: {average_precision}')
 print(f'Average Recall: {average_recall}')
 
+################################################
+
+2024-07-25:00:36:00,218 WARNING  [tracking_store.py:153] log_inputs not supported
+2024-07-25:00:36:04,383 WARNING  [tracking_store.py:153] log_inputs not supported
+2024-07-25:00:36:07,758 WARNING  [tracking_store.py:153] log_inputs not supported
+2024-07-25:00:36:08,3 WARNING  [tracking_store.py:153] log_inputs not supported
+2024-07-25:00:36:08,131 WARNING  [tracking_store.py:153] log_inputs not supported
+2024-07-25:00:36:09,246 WARNING  [tracking_store.py:153] log_inputs not supported
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[104], line 86
+     83     recommendations = recommended_interventions[:10]
+     85     all_recommendations.append(recommendations)
+---> 86     actual_interventions = X_test.iloc[index][features_to_include].index[X_test.iloc[index][features_to_include] > 0].tolist()
+     87     all_actuals.append(actual_interventions)
+     89 # Evaluate recommendations
+
+File ~/cluster-env/trident_env/lib/python3.10/site-packages/pandas/core/ops/common.py:81, in _unpack_zerodim_and_defer.<locals>.new_method(self, other)
+     77             return NotImplemented
+     79 other = item_from_zerodim(other)
+---> 81 return method(self, other)
+
+File ~/cluster-env/trident_env/lib/python3.10/site-packages/pandas/core/arraylike.py:56, in OpsMixin.__gt__(self, other)
+     54 @unpack_zerodim_and_defer("__gt__")
+     55 def __gt__(self, other):
+---> 56     return self._cmp_method(other, operator.gt)
+
+File ~/cluster-env/trident_env/lib/python3.10/site-packages/pandas/core/series.py:6096, in Series._cmp_method(self, other, op)
+   6093 rvalues = extract_array(other, extract_numpy=True, extract_range=True)
+   6095 with np.errstate(all="ignore"):
+-> 6096     res_values = ops.comparison_op(lvalues, rvalues, op)
+   6098 return self._construct_result(res_values, name=res_name)
+
+File ~/cluster-env/trident_env/lib/python3.10/site-packages/pandas/core/ops/array_ops.py:293, in comparison_op(left, right, op)
+    290     return invalid_comparison(lvalues, rvalues, op)
+    292 elif is_object_dtype(lvalues.dtype) or isinstance(rvalues, str):
+--> 293     res_values = comp_method_OBJECT_ARRAY(op, lvalues, rvalues)
+    295 else:
+    296     res_values = _na_arithmetic_op(lvalues, rvalues, op, is_cmp=True)
+
+File ~/cluster-env/trident_env/lib/python3.10/site-packages/pandas/core/ops/array_ops.py:82, in comp_method_OBJECT_ARRAY(op, x, y)
+     80     result = libops.vec_compare(x.ravel(), y.ravel(), op)
+     81 else:
+---> 82     result = libops.scalar_compare(x.ravel(), y, op)
+     83 return result.reshape(x.shape)
+
+File ~/cluster-env/trident_env/lib/python3.10/site-packages/pandas/_libs/ops.pyx:107, in pandas._libs.ops.scalar_compare()
+
+TypeError: '>' not supported between instances of 'str' and 'int'
+
