@@ -1,146 +1,241 @@
-final_features = [ 'avginterventiontotalduration',
-#  'areaoffocus_attending_job_interviews',
-#  'areaoffocus_caring_responsibilities',
-#  'areaoffocus_communication_skills',
-#  'areaoffocus_completing_cv_&_job_applications',
-#  'areaoffocus_completing_cv_and_job_applications',
-#  'areaoffocus_confidence',
-#  'areaoffocus_criminal_record',
-#  'areaoffocus_digital_hardware_&_connectivity',
-#  'areaoffocus_digital_skills',
-#  'areaoffocus_finance',
-#  'areaoffocus_housing',
-#  'areaoffocus_job_goal',
-#  'areaoffocus_job_search',
-#  'areaoffocus_learning_capability',
-#  'areaoffocus_literacy_&_numeracy',
-#  'areaoffocus_literacy_and_numeracy',
-#  'areaoffocus_mental_wellbeing',
-#  'areaoffocus_motivation',
-#  'areaoffocus_photo_identification',
-#  'areaoffocus_physical_capability',
-#  'areaoffocus_qualifications',
-#  'areaoffocus_qualifications_incl_industry',
-#  'areaoffocus_qualifications_progression',
-#  'areaoffocus_social_&_support_networks',
-#  'areaoffocus_transferable_skills',
-#  'areaoffocus_transport',
-#  'level_level_1',
-#  'level_level_2',
-#  'level_level_3',
-#  'level_level_4',
-#  'level_level_5',
-#  'level_level_6',
- 'category_access_external_digital_support_service',
- 'category_access_external_hardware_support_service',
- 'category_access_external_mental_wellbeing_service',
- 'category_access_external_money_management_support_service',
- 'category_access_external_physical_health_support_service',
- 'category_access_external_self_employment_support_service',
- 'category_access_external_support_network',
- 'category_access_external_transferrable_skills_service',
- 'category_apply_for_jobs',
- 'category_apply_for_photo_id',
- 'category_apply_for_courses_with_the_relevant_qualifications',
- 'category_attend_external_care_support_service',
- 'category_attend_external_confidence_building_service',
- 'category_attend_external_esol_course',
- 'category_attend_external_english_course',
- 'category_attend_external_ex-offender_support_service',
- 'category_attend_external_functional_skills_service',
- 'category_attend_external_housing_support_service',
- 'category_attend_external_interview_support_service',
- 'category_attend_external_job_goal_session',
- 'category_attend_external_job_search_service',
- 'category_attend_external_job_searching_event',
- 'category_attend_external_motivation_service',
- 'category_attend_external_self_employment_support_service',
- 'category_attend_a_121_with_the_wellbeing_officer',
- 'category_attend_a_confidence_building_session',
- 'category_attend_a_group_session_on_cv_building',
- 'category_attend_a_group_session_on_interview_preparation',
- 'category_attend_an_internal_wellbeing_workshop',
- 'category_attend_an_interview_skills_workshop',
- 'category_attend_the_journey_to_employment_workshop',
- 'category_bring_children_to_appointments',
- 'category_bring_evidence_of_travel_costs_to_appointment_to_claim_expenses',
- 'category_complete_external_qualification',
- 'category_complete_a_digital_audit',
- 'category_complete_a_mental_wellbeing_assessment',
- 'category_complete_a_mock_interview_with_an_advisor',
- 'category_complete_confidence_building_sessions_on_iworks',
- 'category_complete_debt_management_course_on_iworks',
- 'category_complete_iworks_digital_skills_sessions',
- 'category_create_a_cv_tailored_to_the_role_you_are_applying_for',
- 'category_create_multiple_cvs_relevant_to_the_sectors_being_applied_for',
- 'category_gather_work_and_education_history',
- 'category_identify_esol_courses_available',
- 'category_identify_benefits_of_increasing_physical_activity',
- 'category_identify_immediate_support_available_to_develop_your_understanding_of_english_family',
- 'category_identify_impact_on_job_goals_and_how_these_can_be_overcome',
- 'category_identify_nurseries_offering_funded_childcare',
- 'category_identify_qualifications_gaps',
- 'category_identify_qualifications_needed_to_fill_gaps',
- "category_identify_qualifications_that_could_be_gained_via_iwork's",
- 'category_identify_specialist_intervention_services_relating_to_physical_activity',
- 'category_identifying_areas_for_improving_reading_and_writing_with_iworks',
- 'category_identifying_areas_for_improving_reading_and_writing_within_local_community',
- 'category_plan_travel_routes',
- 'category_plan_travel_routes_for_attending_job_interviews/work_locations',
- 'category_provide_evidence_of_qualifications',
- 'category_research_the_role_being_applied_for',
- 'category_update_cv_with_new_qualifications_gained',
- 'category_use_iworks_cv_checker_to_assess_the_quality_of_your_cv',
- 'category_use_iworks_interview_360_tool_to_prepare_for_a_job_interview',
- 'category_use_iworks_to_build_a_cv/curriculum_vitae',
- 'category_use_the_job_search_function_in_iworks_to_shortlist_roles_to_apply_for'
+import pandas as pd
+from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import NearestNeighbors
+from sklearn.model_selection import train_test_split
+
+# Assume the data preparation steps have already been performed, resulting in train_pdf and test_pdf
+# and features_to_include list is defined with necessary features.
+
+# Define the features and target
+features_to_include = [
+    'avginterventiontotalduration',
+    'areaoffocus_attending_job_interviews',
+    'areaoffocus_caring_responsibilities',
+    'areaoffocus_communication_skills',
+    'areaoffocus_completing_cv_&_job_applications',
+    'areaoffocus_completing_cv_and_job_applications',
+    'areaoffocus_confidence',
+    'areaoffocus_criminal_record',
+    'areaoffocus_digital_hardware_&_connectivity',
+    'areaoffocus_digital_skills',
+    'areaoffocus_finance',
+    'areaoffocus_housing',
+    'areaoffocus_job_goal',
+    'areaoffocus_job_search',
+    'areaoffocus_learning_capability',
+    'areaoffocus_literacy_&_numeracy',
+    'areaoffocus_literacy_and_numeracy',
+    'areaoffocus_mental_wellbeing',
+    'areaoffocus_motivation',
+    'areaoffocus_photo_identification',
+    'areaoffocus_physical_capability',
+    'areaoffocus_qualifications',
+    'areaoffocus_qualifications_incl_industry',
+    'areaoffocus_qualifications_progression',
+    'areaoffocus_social_&_support_networks',
+    'areaoffocus_transferable_skills',
+    'areaoffocus_transport',
+    'level_level_1',
+    'level_level_2',
+    'level_level_3',
+    'level_level_4',
+    'level_level_5',
+    'level_level_6',
+    'category_access_external_digital_support_service',
+    'category_access_external_hardware_support_service',
+    'category_access_external_mental_wellbeing_service',
+    'category_access_external_money_management_support_service',
+    'category_access_external_physical_health_support_service',
+    'category_access_external_self_employment_support_service',
+    'category_access_external_support_network',
+    'category_access_external_transferrable_skills_service',
+    'category_apply_for_jobs',
+    'category_apply_for_photo_id',
+    'category_apply_for_courses_with_the_relevant_qualifications',
+    'category_attend_external_care_support_service',
+    'category_attend_external_confidence_building_service',
+    'category_attend_external_esol_course',
+    'category_attend_external_english_course',
+    'category_attend_external_ex-offender_support_service',
+    'category_attend_external_functional_skills_service',
+    'category_attend_external_housing_support_service',
+    'category_attend_external_interview_support_service',
+    'category_attend_external_job_goal_session',
+    'category_attend_external_job_search_service',
+    'category_attend_external_job_searching_event',
+    'category_attend_external_motivation_service',
+    'category_attend_external_self_employment_support_service',
+    'category_attend_a_121_with_the_wellbeing_officer',
+    'category_attend_a_confidence_building_session',
+    'category_attend_a_group_session_on_cv_building',
+    'category_attend_a_group_session_on_interview_preparation',
+    'category_attend_an_internal_wellbeing_workshop',
+    'category_attend_an_interview_skills_workshop',
+    'category_attend_the_journey_to_employment_workshop',
+    'category_bring_children_to_appointments',
+    'category_bring_evidence_of_travel_costs_to_appointment_to_claim_expenses',
+    'category_complete_external_qualification',
+    'category_complete_a_digital_audit',
+    'category_complete_a_mental_wellbeing_assessment',
+    'category_complete_a_mock_interview_with_an_advisor',
+    'category_complete_confidence_building_sessions_on_iworks',
+    'category_complete_debt_management_course_on_iworks',
+    'category_complete_iworks_digital_skills_sessions',
+    'category_create_a_cv_tailored_to_the_role_you_are_applying_for',
+    'category_create_multiple_cvs_relevant_to_the_sectors_being_applied_for',
+    'category_gather_work_and_education_history',
+    'category_identify_esol_courses_available',
+    'category_identify_benefits_of_increasing_physical_activity',
+    'category_identify_immediate_support_available_to_develop_your_understanding_of_english_family',
+    'category_identify_impact_on_job_goals_and_how_these_can_be_overcome',
+    'category_identify_nurseries_offering_funded_childcare',
+    'category_identify_qualifications_gaps',
+    'category_identify_qualifications_needed_to_fill_gaps',
+    "category_identify_qualifications_that_could_be_gained_via_iwork's",
+    'category_identify_specialist_intervention_services_relating_to_physical_activity',
+    'category_identifying_areas_for_improving_reading_and_writing_with_iworks',
+    'category_identifying_areas_for_improving_reading_and_writing_within_local_community',
+    'category_plan_travel_routes',
+    'category_plan_travel_routes_for_attending_job_interviews/work_locations',
+    'category_provide_evidence_of_qualifications',
+    'category_research_the_role_being_applied_for',
+    'category_update_cv_with_new_qualifications_gained',
+    'category_use_iworks_cv_checker_to_assess_the_quality_of_your_cv',
+    'category_use_iworks_interview_360_tool_to_prepare_for_a_job_interview',
+    'category_use_iworks_to_build_a_cv/curriculum_vitae',
+    'category_use_the_job_search_function_in_iworks_to_shortlist_roles_to_apply_for',
+    'cpa',
+    'site',
+    'employmenttype',
+    'daysonprogramme',
+    'jobreadiness',
+    'sectorsapplyingfor',
+    'fortnightlymeetingstatuscss4',
+    'facetofacereviewactionstatuscss5',
+    'actionplanbookingstatuscss7',
+    'noofactivejobs',
+    'noofinterventions',
+    'countofcompletediagnosticassessments',
+    'noforwardactionplanreviewflag',
+    'diagnosticassessmentaction',
+    'diagnosticassessmentactiongroupings',
+    'changeofcircumstancesreceived',
+    'changeofcircumstancesreceivedinlast7days',
+    'noofunsuccessfulinitialappointments',
+    'initialappointmentbookedpast15workingdays',
+    'noofinitialappointments',
+    'daysbetweenlastandnextbookedactionplanreviewmeeting',
+    'initialprocesscompleteflag',
+    'confirmedappointmentsinthefuture',
+    'noofverifiedsubsequentjobs',
+    '1kearningsbutno1stcommencementofearningsflag',
+    'nojobsinworkflag',
+    'pendingjobsflag',
+    'noofcompletecustomeractionplans',
+    'noofjobspending',
+    'missinglifecareresponsibilitiesflag',
+    'missinghighestqualificationsflag',
+    'unknownlastjobdetailsflag',
+    'unknowntimelastjobflag',
+    'missingageflag',
+    'unknownsectorsapplyingforflag',
+    'nocvflag',
+    'totalmeetings',
+    'noofattendedmeetings',
+    'percentofattendedmeetings',
+    'expectedleaversnoexitreviewmeetingbookedflag',
+    'unknownjobreadinesscategory',
+    'statusinworkearningsover1kflag',
+    'inworknocommencementofearningflag',
+    'lastverifiedjobemploymenttype',
+    'earningstodate',
+    'initialappointmentattendedin30workingdays',
+    'totalparticipantearnings',
+    'jobreadinessupdatedinlast3months',
+    'monthlyaveragefacetofaceappointments',
+    'monthlyaverageremoteappointments',
+    'averagedaysbetweensuccessfulappointments',
+    'appointmentattendancerate',
+    'daystofirstcvupload',
+    'disengagedduringdelivery',
+    'agecategory',
+    'genderatprogrammestart',
+    'ethniccategory',
+    'englishasfirstlanguageatprogrammestart',
+    'highestqualificationatprogrammestart',
+    'longtermhealthconditionatprogrammestart',
+    'requireesolorbslatprogrammestart',
+    'caringresponsibilitiesatprogrammestartt',
+    'itconfidencebarriercategory',
+    'mentalhealthasabarrier',
+    'physicalhealthasabarrier',
+    'timeunemployed',
+    'finacialbarriercategory',
+    'confidencebarriercategory'
 ]
 
-X_train_selected = X_train[final_features]
+# Preprocessing data
+fill_with_zero_columns = [col for col in features_to_include if data_types[col] == 'Numerical']
+train_pdf[fill_with_zero_columns] = train_pdf[fill_with_zero_columns].fillna(0)
+test_pdf[fill_with_zero_columns] = test_pdf[fill_with_zero_columns].fillna(0)
 
-# Create new boolean, numerical, and categorical column lists based on the selected features
-selected_bool_cols = [col for col in BOOL_COLS if col in final_features]
-selected_numerical_cols = [col for col in NUMERICAL_COLS if col in final_features]
-selected_categorical_cols = [col for col in CATEGORICAL_COLS if col in final_features]
+# Standardize features for similarity calculation
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(train_pdf[features_to_include])
 
-# Create a new preprocessor based on the selected features
-selected_preprocessor = ColumnTransformer(transformers=[
-    ('bool', bool_transformer, selected_bool_cols),
-    ('numerical', numerical_transformer, selected_numerical_cols),
-    ('categorical', categorical_transformer, selected_categorical_cols)
-])
+# Fit Nearest Neighbors model
+nn = NearestNeighbors(n_neighbors=5, metric='cosine')
+nn.fit(X_train_scaled)
 
+# Function to find similar participants
+def find_similar_participants(new_participant_data, X_train, n_neighbors=5):
+    new_participant_scaled = scaler.transform(new_participant_data.values.reshape(1, -1))
+    distances, indices = nn.kneighbors(new_participant_scaled, n_neighbors=n_neighbors)
+    return train_pdf.iloc[indices[0]]
 
-#classifier = GradientBoostingClassifier(random_state=42,learning_rate=0.1,max_depth=3,n_estimators=200)
+# Function to evaluate the recommendations
+def evaluate_recommendations(recommended_interventions, actual_interventions, top_n=10):
+    # Convert to binary format for precision and recall
+    y_true = [1 if intervention in actual_interventions else 0 for intervention in recommended_interventions]
+    y_pred = [1] * top_n  # All recommended interventions are considered as positive
 
-classifier = XGBClassifier(random_state=42, learning_rate=0.1, max_depth=5, n_estimators =200)
-# Create a new pipeline with the selected preprocessor and classifier
-selected_pipeline = Pipeline(steps=[
-    ('preprocessor', selected_preprocessor),
-    ('classifier', classifier)
-])
-
-# Fit the new pipeline
-selected_pipeline.fit(X_train_selected, y_train)
-
-# Make predictions on the balanced test data
-X_test = test_pdf_balanced.drop('job_out_come', axis=1)
-X_test_selected = X_test[final_features]
-y_test = test_pdf_balanced['job_out_come']
-y_pred = selected_pipeline.predict(X_test_selected)
-y_pred_proba = selected_pipeline.predict_proba(X_test_selected)[:, 1]
-
-# Compute metrics
-test_auc = roc_auc_score(y_test, y_pred_proba)
-precision = precision_score(y_test, y_pred)
-recall = recall_score(y_test, y_pred)
-f1 = f1_score(y_test, y_pred)
+    precision = precision_score(y_true, y_pred)
+    recall = recall_score(y_true, y_pred)
     
-res_dict = {
-  'Test AUC': test_auc,
-  'Test Precision': precision,
-  'Test Recall': recall,
-  'Test F1': f1
-}
+    return {
+        'Precision': precision,
+        'Recall': recall
+    }
 
-print(res_dict)
+# Generate recommendations for each participant in the test set
+all_recommendations = []
+all_actuals = []
+
+for index, row in test_pdf.iterrows():
+    new_participant_data = row[features_to_include]
+    similar_participants = find_similar_participants(new_participant_data, X_train_scaled)
+    successful_participants = similar_participants[similar_participants['job_out_come'] == 1]
+    mean_feature_values = successful_participants.mean()
+    ranked_features = mean_feature_values.sort_values(ascending=False)
+    recommended_interventions = [feature for feature in ranked_features.index if 'areaoffocus_' in feature or 'level_' in feature or 'category_']
+    recommendations = recommended_interventions[:10]
+
+    all_recommendations.append(recommendations)
+    actual_interventions = row[features_to_include].index[row[features_to_include] > 0].tolist()
+    all_actuals.append(actual_interventions)
+
+# Evaluate recommendations
+precision_scores = []
+recall_scores = []
+
+for recs, actuals in zip(all_recommendations, all_actuals):
+    results = evaluate_recommendations(recs, actuals)
+    precision_scores.append(results['Precision'])
+    recall_scores.append(results['Recall'])
+
+average_precision = np.mean(precision_scores)
+average_recall = np.mean(recall_scores)
+
+print(f'Average Precision: {average_precision}')
+print(f'Average Recall: {average_recall}')
