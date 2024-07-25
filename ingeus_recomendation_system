@@ -280,3 +280,112 @@ File ~/cluster-env/trident_env/lib/python3.10/site-packages/pandas/_libs/ops.pyx
 
 TypeError: '>' not supported between instances of 'str' and 'int'
 
+########################################
+
+import pandas as pd
+from sklearn.metrics import precision_score, recall_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import NearestNeighbors
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler, RobustScaler
+from sklearn.impute import SimpleImputer
+import numpy as np
+
+# Assume the data preparation steps have already been performed, resulting in train_pdf and test_pdf
+# and features_to_include list is defined with necessary features.
+
+# Preprocessor as defined in your original pipeline
+BOOL_COLS = [i for i in features_to_include if data_types[i] == "Boolean"]
+NUMERICAL_COLS = [i for i in features_to_include if data_types[i] == "Numerical"]
+CATEGORICAL_COLS = [i for i in features_to_include if data_types[i] == "Categorical"]
+
+bool_transformer = Pipeline(steps=[
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+])
+
+numerical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='mean')),
+    ('scaler', RobustScaler())
+])
+
+categorical_transformer = Pipeline(steps=[
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+])
+
+preprocessor = ColumnTransformer(transformers=[
+    ('bool', bool_transformer, BOOL_COLS),
+    ('numerical', numerical_transformer, NUMERICAL_COLS),
+    ('categorical', categorical_transformer, CATEGORICAL_COLS)
+])
+
+# Apply the preprocessor to the training data
+X_train = train_pdf[features_to_include]
+X_test = test_pdf[features_to_include]
+
+# Fit and transform the training data
+X_train_transformed = preprocessor.fit_transform(X_train)
+
+# Transform the test data
+X_test_transformed = preprocessor.transform(X_test)
+
+# Fit Nearest Neighbors model on the transformed training data
+nn = NearestNeighbors(n_neighbors=5, metric='cosine')
+nn.fit(X_train_transformed)
+
+# Function to find similar participants
+def find_similar_participants(new_participant_data, n_neighbors=5):
+    distances, indices = nn.kneighbors(new_participant_data.reshape(1, -1), n_neighbors=n_neighbors)
+    return train_pdf.iloc[indices[0]]
+
+# Function to evaluate the recommendations
+def evaluate_recommendations(recommended_interventions, actual_interventions, top_n=10):
+    # Convert to binary format for precision and recall
+    y_true = [1 if intervention in actual_interventions else 0 for intervention in recommended_interventions]
+    y_pred = [1] * top_n  # All recommended interventions are considered as positive
+
+    precision = precision_score(y_true, y_pred)
+    recall = recall_score(y_true, y_pred)
+    
+    return {
+        'Precision': precision,
+        'Recall': recall
+    }
+
+# Generate recommendations for each participant in the test set
+all_recommendations = []
+all_actuals = []
+
+# Extract columns that are related to interventions
+intervention_columns = [col for col in features_to_include if 'areaoffocus_' in col or 'level_' in col or 'category_' in col]
+
+for index in range(X_test_transformed.shape[0]):
+    new_participant_data = X_test_transformed[index]
+    similar_participants = find_similar_participants(new_participant_data)
+    successful_participants = similar_participants[similar_participants['job_out_come'] == 1]
+    mean_feature_values = successful_participants[intervention_columns].mean()
+    ranked_features = mean_feature_values.sort_values(ascending=False)
+    recommended_interventions = [feature for feature in ranked_features.index]
+    recommendations = recommended_interventions[:10]
+
+    all_recommendations.append(recommendations)
+    actual_interventions = X_test.iloc[index][intervention_columns].index[X_test.iloc[index][intervention_columns] > 0].tolist()
+    all_actuals.append(actual_interventions)
+
+# Evaluate recommendations
+precision_scores = []
+recall_scores = []
+
+for recs, actuals in zip(all_recommendations, all_actuals):
+    results = evaluate_recommendations(recs, actuals)
+    precision_scores.append(results['Precision'])
+    recall_scores.append(results['Recall'])
+
+average_precision = np.mean(precision_scores)
+average_recall = np.mean(recall_scores)
+
+print(f'Average Precision: {average_precision}')
+print(f'Average Recall: {average_recall}')
+
+
