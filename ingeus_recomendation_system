@@ -99,3 +99,28 @@ average_recall = np.mean(recall_scores)
 
 print(f'Average Precision: {average_precision}')
 print(f'Average Recall: {average_recall}')
+
+######################
+
+IndexError                                Traceback (most recent call last)
+Cell In[101], line 253
+    250 all_actuals = []
+    252 for index, row in X_test.iterrows():
+--> 253     new_participant_data = X_test_transformed[index]
+    254     similar_participants = find_similar_participants(new_participant_data, X_train_transformed)
+    255     successful_participants = similar_participants[similar_participants['job_out_come'] == 1]
+
+File ~/cluster-env/trident_env/lib/python3.10/site-packages/scipy/sparse/_index.py:47, in IndexMixin.__getitem__(self, key)
+     46 def __getitem__(self, key):
+---> 47     row, col = self._validate_indices(key)
+     49     # Dispatch to specialized methods.
+     50     if isinstance(row, INT_TYPES):
+
+File ~/cluster-env/trident_env/lib/python3.10/site-packages/scipy/sparse/_index.py:155, in IndexMixin._validate_indices(self, key)
+    153 row = int(row)
+    154 if row < -M or row >= M:
+--> 155     raise IndexError('row index (%d) out of range' % row)
+    156 if row < 0:
+    157     row += M
+
+IndexError: row index (35311) out of range
